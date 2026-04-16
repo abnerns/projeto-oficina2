@@ -25,3 +25,21 @@ RF12: O sistema deve gerar certificados contendo o nome do aluno e a oficina par
 ### 1.5 Visualização de Dados 
 RF14: O sistema deve apresentar a quantidade de alunos por oficina.  
 RF15: O sistema deve apresentar listagem de oficinas com seus respectivos participantes
+
+## Requisitos Não Funcionais
+
+## 2.1 Tecnologia
+RNF01: O sistema deve ser acessível via navegador web.
+RNF02: O sistema deve utilizar tecnologias amplamente conhecidas e de fácil implementação
+RNF03: O sistema deve utilizar banco de dados relacional. 
+
+## 2.2 Desempenho  
+RNF04: O tempo de resposta das requisições não deve exceder 2 segundosem condições normais de uso.
+
+## 2.3 Segurança 
+RNF05: As senhas dos usuários devem ser armazenadas de forma criptografada.  
+RNF06: O sistema deve exigir autenticação para acesso às funcionalidadesprotegidas.
+
+## 2.4 Qualidade
+RNF07: O sistema deve possuir testes automatizados básicos para suas principais funcionalidades.
+RNF08: O código-fonte deve ser versionado em repositório Git.
