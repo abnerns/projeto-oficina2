@@ -43,3 +43,25 @@ RNF06: O sistema deve exigir autenticação para acesso às funcionalidadesprote
 ### 2.4 Qualidade
 RNF07: O sistema deve possuir testes automatizados básicos para suas principais funcionalidades.
 RNF08: O código-fonte deve ser versionado em repositório Git.
+
+# Definição da arquitetura do sistema
+
+## Linguagens:
+Frontend: HTML, CSS e JavaScript e eventuais frameworks e bibliotecas adicionais.  
+Backend: Node.js com Express.  Banco de Dados: PostgreSQL com Supabase (gerenciador de banco de dados online).  
+
+## Estrutura e organização: 
+Padrão de projeto: MVC (Model-View-Controller).
+Metodologia: SCRUM.
+Framework de organização: Kanban
+
+### Sprint 1 
+06/04 - 10/05  
+Implementação de autenticação (login/logout).  CRUD de oficinas.  CRUD de alunos.
+
+
+### Sprint 2 25/05 - 28/06 
+Implementação do vínculo entre alunos e oficinas.  Geração de certificados.  Implementação de listagens e visualizações.
+Entrega 05/07
+
+
