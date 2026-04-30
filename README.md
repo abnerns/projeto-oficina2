@@ -61,7 +61,7 @@ Implementação de autenticação (login/logout).  CRUD de oficinas.  CRUD de al
 
 
 ### Sprint 2 25/05 - 28/06 
-
+```
 ┌─────────────────────────────────────────────────────────────────┐
 │                         CLIENTE (Browser)                        │
 │                                                                   │
@@ -166,6 +166,7 @@ Implementação de autenticação (login/logout).  CRUD de oficinas.  CRUD de al
 │  └──────────────────────────┘  └──────────────────────────────┘  │
 │                                                                   │
 └───────────────────────────────────────────────────────────────────┘
+```
 Implementação do vínculo entre alunos e oficinas.  Geração de certificados.  Implementação de listagens e visualizações.
 Entrega 05/07
 
