@@ -20,7 +20,8 @@ RF10: O sistema deve permitir vincular alunos às oficinas.
 RF11: O sistema deve permitir visualizar os alunos vinculados a uma oficina.
 
 ### 1.4 Certificados 
-RF12: O sistema deve gerar certificados contendo o nome do aluno e a oficina participante.  RF13: O sistema deve permitir a exportação do certificado em formato PDF. 
+RF12: O sistema deve gerar certificados contendo o nome do aluno e a oficina participante.  
+RF13: O sistema deve permitir a exportação do certificado em formato PDF. 
 
 ### 1.5 Visualização de Dados 
 RF14: O sistema deve apresentar a quantidade de alunos por oficina.  
@@ -34,11 +35,11 @@ RNF02: O sistema deve utilizar tecnologias amplamente conhecidas e de fácil imp
 RNF03: O sistema deve utilizar banco de dados relacional. 
 
 ### 2.2 Desempenho  
-RNF04: O tempo de resposta das requisições não deve exceder 2 segundosem condições normais de uso.
+RNF04: O tempo de resposta das requisições não deve exceder 2 segundo sem condições normais de uso.
 
 ### 2.3 Segurança 
 RNF05: As senhas dos usuários devem ser armazenadas de forma criptografada.  
-RNF06: O sistema deve exigir autenticação para acesso às funcionalidadesprotegidas.
+RNF06: O sistema deve exigir autenticação para acesso às funcionalidades protegidas.
 
 ### 2.4 Qualidade
 RNF07: O sistema deve possuir testes automatizados básicos para suas principais funcionalidades.
