@@ -1,0 +1,29 @@
+{
+  "name": "projeto-oficina2",
+  "version": "1.0.0",
+  "description": "A project for UTFPR",
+  "homepage": "https://github.com/abnerns/projeto-oficina2#readme",
+  "bugs": {
+    "url": "https://github.com/abnerns/projeto-oficina2/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abnerns/projeto-oficina2.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm test",
+    "start": "node back-end/src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "firebase": "^12.12.1",
+    "firebase-admin": "^13.8.0",
+    "postgres": "^3.4.9"
+  }
+}
