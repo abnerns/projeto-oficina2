@@ -9,14 +9,27 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeachersRouteImport } from './routes/_app.teachers'
+import { Route as AppStudentsRouteImport } from './routes/_app.students'
 import { Route as AppWorkshopsIndexRouteImport } from './routes/_app.workshops.index'
 import { Route as AppWorkshopsNewRouteImport } from './routes/_app.workshops.new'
 import { Route as AppWorkshopsIdIndexRouteImport } from './routes/_app.workshops.$id.index'
 import { Route as AppWorkshopsIdEditRouteImport } from './routes/_app.workshops.$id.edit'
 
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
@@ -29,6 +42,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppTeachersRoute = AppTeachersRouteImport.update({
   id: '/teachers',
   path: '/teachers',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppStudentsRoute = AppStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
   getParentRoute: () => AppRoute,
 } as any)
 const AppWorkshopsIndexRoute = AppWorkshopsIndexRouteImport.update({
@@ -54,6 +72,9 @@ const AppWorkshopsIdEditRoute = AppWorkshopsIdEditRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/students': typeof AppStudentsRoute
   '/teachers': typeof AppTeachersRoute
   '/workshops/new': typeof AppWorkshopsNewRoute
   '/workshops/': typeof AppWorkshopsIndexRoute
@@ -61,6 +82,9 @@ export interface FileRoutesByFullPath {
   '/workshops/$id/': typeof AppWorkshopsIdIndexRoute
 }
 export interface FileRoutesByTo {
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/students': typeof AppStudentsRoute
   '/teachers': typeof AppTeachersRoute
   '/': typeof AppIndexRoute
   '/workshops/new': typeof AppWorkshopsNewRoute
@@ -71,6 +95,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteWithChildren
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/_app/students': typeof AppStudentsRoute
   '/_app/teachers': typeof AppTeachersRoute
   '/_app/': typeof AppIndexRoute
   '/_app/workshops/new': typeof AppWorkshopsNewRoute
@@ -82,6 +109,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/login'
+    | '/register'
+    | '/students'
     | '/teachers'
     | '/workshops/new'
     | '/workshops/'
@@ -89,6 +119,9 @@ export interface FileRouteTypes {
     | '/workshops/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
+    | '/login'
+    | '/register'
+    | '/students'
     | '/teachers'
     | '/'
     | '/workshops/new'
@@ -98,6 +131,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_app'
+    | '/login'
+    | '/register'
+    | '/_app/students'
     | '/_app/teachers'
     | '/_app/'
     | '/_app/workshops/new'
@@ -108,10 +144,26 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
@@ -131,6 +183,13 @@ declare module '@tanstack/react-router' {
       path: '/teachers'
       fullPath: '/teachers'
       preLoaderRoute: typeof AppTeachersRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/students': {
+      id: '/_app/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof AppStudentsRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/workshops/': {
@@ -165,6 +224,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppStudentsRoute: typeof AppStudentsRoute
   AppTeachersRoute: typeof AppTeachersRoute
   AppIndexRoute: typeof AppIndexRoute
   AppWorkshopsNewRoute: typeof AppWorkshopsNewRoute
@@ -174,6 +234,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppStudentsRoute: AppStudentsRoute,
   AppTeachersRoute: AppTeachersRoute,
   AppIndexRoute: AppIndexRoute,
   AppWorkshopsNewRoute: AppWorkshopsNewRoute,
@@ -186,6 +247,8 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

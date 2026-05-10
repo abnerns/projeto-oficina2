@@ -14,6 +14,7 @@ const items = [
   { to: "/workshops", label: "Oficinas", icon: GraduationCap },
   { to: "/workshops/new", label: "Nova Oficina", icon: Plus },
   { to: "/teachers", label: "Professores", icon: Users },
+  { to: "/students", label: "Alunos", icon: Users },
 ];
 
 export function Sidebar({ collapsed, onToggle, onNavigate }: Props) {

@@ -13,6 +13,7 @@ import appCss from "../styles.css?url";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { WorkshopsProvider } from "@/context/WorkshopsContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { StudentsProvider } from "@/context/StudentsContext";
 
 function NotFoundComponent() {
   return (
@@ -96,10 +97,12 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <WorkshopsProvider>
-            <Outlet />
-            <Toaster position="top-right" richColors closeButton />
-          </WorkshopsProvider>
+          <StudentsProvider>
+            <WorkshopsProvider>
+              <Outlet />
+              <Toaster position="top-right" richColors closeButton />
+            </WorkshopsProvider>
+          </StudentsProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
