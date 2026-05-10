@@ -12,6 +12,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { WorkshopsProvider } from "@/context/WorkshopsContext";
+import { AuthProvider } from "@/context/AuthContext";
 
 function NotFoundComponent() {
   return (
@@ -94,10 +95,12 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <WorkshopsProvider>
-          <Outlet />
-          <Toaster position="top-right" richColors closeButton />
-        </WorkshopsProvider>
+        <AuthProvider>
+          <WorkshopsProvider>
+            <Outlet />
+            <Toaster position="top-right" richColors closeButton />
+          </WorkshopsProvider>
+        </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );
