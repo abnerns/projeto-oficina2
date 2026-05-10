@@ -2,3 +2,4 @@ node_modules/
 package-lock.json
 teste.html
 .env
+back-end/src/common/admin/serviceAccount.json

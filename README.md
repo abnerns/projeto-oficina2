@@ -20,7 +20,12 @@ RF10: O sistema deve permitir vincular alunos às oficinas.
 RF11: O sistema deve permitir visualizar os alunos vinculados a uma oficina.
 
 ### 1.4 Certificados 
+<<<<<<< HEAD
 RF12: O sistema deve gerar certificados contendo o nome do aluno e a oficina participante.  RF13: O sistema deve permitir a exportação do certificado em formato PDF. 
+=======
+RF12: O sistema deve gerar certificados contendo o nome do aluno e a oficina participante.  
+RF13: O sistema deve permitir a exportação do certificado em formato PDF. 
+>>>>>>> 138ebbc0e775434900644fd111a390147475c163
 
 ### 1.5 Visualização de Dados 
 RF14: O sistema deve apresentar a quantidade de alunos por oficina.  
@@ -34,11 +39,19 @@ RNF02: O sistema deve utilizar tecnologias amplamente conhecidas e de fácil imp
 RNF03: O sistema deve utilizar banco de dados relacional. 
 
 ### 2.2 Desempenho  
+<<<<<<< HEAD
 RNF04: O tempo de resposta das requisições não deve exceder 2 segundosem condições normais de uso.
 
 ### 2.3 Segurança 
 RNF05: As senhas dos usuários devem ser armazenadas de forma criptografada.  
 RNF06: O sistema deve exigir autenticação para acesso às funcionalidadesprotegidas.
+=======
+RNF04: O tempo de resposta das requisições não deve exceder 2 segundo sem condições normais de uso.
+
+### 2.3 Segurança 
+RNF05: As senhas dos usuários devem ser armazenadas de forma criptografada.  
+RNF06: O sistema deve exigir autenticação para acesso às funcionalidades protegidas.
+>>>>>>> 138ebbc0e775434900644fd111a390147475c163
 
 ### 2.4 Qualidade
 RNF07: O sistema deve possuir testes automatizados básicos para suas principais funcionalidades.
@@ -61,7 +74,11 @@ Implementação de autenticação (login/logout).  CRUD de oficinas.  CRUD de al
 
 
 ### Sprint 2 25/05 - 28/06 
+<<<<<<< HEAD
 
+=======
+```
+>>>>>>> 138ebbc0e775434900644fd111a390147475c163
 ┌─────────────────────────────────────────────────────────────────┐
 │                         CLIENTE (Browser)                        │
 │                                                                   │
@@ -166,6 +183,10 @@ Implementação de autenticação (login/logout).  CRUD de oficinas.  CRUD de al
 │  └──────────────────────────┘  └──────────────────────────────┘  │
 │                                                                   │
 └───────────────────────────────────────────────────────────────────┘
+<<<<<<< HEAD
+=======
+```
+>>>>>>> 138ebbc0e775434900644fd111a390147475c163
 Implementação do vínculo entre alunos e oficinas.  Geração de certificados.  Implementação de listagens e visualizações.
 Entrega 05/07
 
