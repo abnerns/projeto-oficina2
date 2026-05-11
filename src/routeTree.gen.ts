@@ -14,6 +14,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/_app'
 import { Route as AppIndexRouteImport } from './routes/_app.index'
 import { Route as AppTeachersRouteImport } from './routes/_app.teachers'
+import { Route as AppStudentsRouteImport } from './routes/_app.students'
 import { Route as AppWorkshopsIndexRouteImport } from './routes/_app.workshops.index'
 import { Route as AppWorkshopsNewRouteImport } from './routes/_app.workshops.new'
 import { Route as AppWorkshopsIdIndexRouteImport } from './routes/_app.workshops.$id.index'
@@ -43,6 +44,11 @@ const AppTeachersRoute = AppTeachersRouteImport.update({
   path: '/teachers',
   getParentRoute: () => AppRoute,
 } as any)
+const AppStudentsRoute = AppStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppWorkshopsIndexRoute = AppWorkshopsIndexRouteImport.update({
   id: '/workshops/',
   path: '/workshops/',
@@ -68,6 +74,10 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+<<<<<<< HEAD
+=======
+  '/students': typeof AppStudentsRoute
+>>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
   '/teachers': typeof AppTeachersRoute
   '/workshops/new': typeof AppWorkshopsNewRoute
   '/workshops/': typeof AppWorkshopsIndexRoute
@@ -77,6 +87,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+<<<<<<< HEAD
+=======
+  '/students': typeof AppStudentsRoute
+>>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
   '/teachers': typeof AppTeachersRoute
   '/': typeof AppIndexRoute
   '/workshops/new': typeof AppWorkshopsNewRoute
@@ -89,6 +103,10 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+<<<<<<< HEAD
+=======
+  '/_app/students': typeof AppStudentsRoute
+>>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
   '/_app/teachers': typeof AppTeachersRoute
   '/_app/': typeof AppIndexRoute
   '/_app/workshops/new': typeof AppWorkshopsNewRoute
@@ -102,6 +120,10 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
+<<<<<<< HEAD
+=======
+    | '/students'
+>>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
     | '/teachers'
     | '/workshops/new'
     | '/workshops/'
@@ -111,6 +133,10 @@ export interface FileRouteTypes {
   to:
     | '/login'
     | '/register'
+<<<<<<< HEAD
+=======
+    | '/students'
+>>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
     | '/teachers'
     | '/'
     | '/workshops/new'
@@ -122,6 +148,7 @@ export interface FileRouteTypes {
     | '/_app'
     | '/login'
     | '/register'
+    | '/_app/students'
     | '/_app/teachers'
     | '/_app/'
     | '/_app/workshops/new'
@@ -173,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTeachersRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/students': {
+      id: '/_app/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof AppStudentsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/workshops/': {
       id: '/_app/workshops/'
       path: '/workshops'
@@ -205,6 +239,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AppRouteChildren {
+  AppStudentsRoute: typeof AppStudentsRoute
   AppTeachersRoute: typeof AppTeachersRoute
   AppIndexRoute: typeof AppIndexRoute
   AppWorkshopsNewRoute: typeof AppWorkshopsNewRoute
@@ -214,6 +249,7 @@ interface AppRouteChildren {
 }
 
 const AppRouteChildren: AppRouteChildren = {
+  AppStudentsRoute: AppStudentsRoute,
   AppTeachersRoute: AppTeachersRoute,
   AppIndexRoute: AppIndexRoute,
   AppWorkshopsNewRoute: AppWorkshopsNewRoute,

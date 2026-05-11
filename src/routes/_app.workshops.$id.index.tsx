@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { useWorkshops } from "@/context/WorkshopsContext";
 import { getTeachersByIds } from "@/data/teachers";
 import { DeleteWorkshopModal } from "@/components/workshops/DeleteWorkshopModal";
+import { WorkshopStudents } from "@/components/workshops/WorkshopStudents";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export const Route = createFileRoute("/_app/workshops/$id/")({
   head: () => ({ meta: [{ title: "Oficinas" }] }),
@@ -37,7 +39,14 @@ function WorkshopDetail() {
         <ArrowLeft className="h-4 w-4" /> Voltar para as Oficinas
       </Link>
 
-      <div className="rounded-2xl bg-card border border-border p-8 shadow-soft">
+      <Tabs defaultValue="details" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-6">
+          <TabsTrigger value="details">Detalhes da Oficina</TabsTrigger>
+          <TabsTrigger value="students">Alunos Vinculados</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="details">
+          <div className="rounded-2xl bg-card border border-border p-8 shadow-soft">
         <div className="flex items-start justify-between gap-4 mb-4">
           <span
             className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${
@@ -97,7 +106,13 @@ function WorkshopDetail() {
             </div>
           ))}
         </div>
-      </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="students">
+          <WorkshopStudents workshopId={w.id} />
+        </TabsContent>
+      </Tabs>
 
       <DeleteWorkshopModal
         workshop={confirm ? w : null}
