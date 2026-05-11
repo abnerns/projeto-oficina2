@@ -74,10 +74,7 @@ export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-<<<<<<< HEAD
-=======
   '/students': typeof AppStudentsRoute
->>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
   '/teachers': typeof AppTeachersRoute
   '/workshops/new': typeof AppWorkshopsNewRoute
   '/workshops/': typeof AppWorkshopsIndexRoute
@@ -87,10 +84,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-<<<<<<< HEAD
-=======
   '/students': typeof AppStudentsRoute
->>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
   '/teachers': typeof AppTeachersRoute
   '/': typeof AppIndexRoute
   '/workshops/new': typeof AppWorkshopsNewRoute
@@ -103,10 +97,7 @@ export interface FileRoutesById {
   '/_app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-<<<<<<< HEAD
-=======
   '/_app/students': typeof AppStudentsRoute
->>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
   '/_app/teachers': typeof AppTeachersRoute
   '/_app/': typeof AppIndexRoute
   '/_app/workshops/new': typeof AppWorkshopsNewRoute
@@ -120,10 +111,7 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/register'
-<<<<<<< HEAD
-=======
     | '/students'
->>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
     | '/teachers'
     | '/workshops/new'
     | '/workshops/'
@@ -133,10 +121,7 @@ export interface FileRouteTypes {
   to:
     | '/login'
     | '/register'
-<<<<<<< HEAD
-=======
     | '/students'
->>>>>>> 3e356810ebdf1f7646995deafe0755570c27f596
     | '/teachers'
     | '/'
     | '/workshops/new'
