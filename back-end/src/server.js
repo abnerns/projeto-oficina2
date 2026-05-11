@@ -1,8 +1,8 @@
-const express = require("express");
-const cors = require("cors");
-const { auth } = require("./common/admin/authentication");
-const { UserModel } = require("./models/superuserModel");
-const { OficinaModel } = require("./models/oficinaModel");
+import express from "express";
+import cors from "cors";
+import auth from "./common/admin/authentication.js";
+import UserModel from "./models/superuserModel.js";
+import OficinaModel from "./models/oficinaModel.js";
 
 const app = express();
 const port = 8080;

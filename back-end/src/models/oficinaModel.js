@@ -1,4 +1,4 @@
-const sql = require("../database");
+import sql from "../database.js";
 
 const OficinaModel = {
     async findAll() {
@@ -64,4 +64,4 @@ const OficinaModel = {
     }
 }
 
-module.exports = { OficinaModel };
+export default OficinaModel;

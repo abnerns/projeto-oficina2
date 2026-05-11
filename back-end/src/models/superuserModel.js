@@ -1,4 +1,4 @@
-const sql = require("../database");
+import sql from "../database.js";
 
 const UserModel = {
     async findAll() {
@@ -60,4 +60,4 @@ const UserModel = {
     }
 }
 
-module.exports = { UserModel };
+export default UserModel;
