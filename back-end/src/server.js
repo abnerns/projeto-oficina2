@@ -149,22 +149,25 @@ app.get("/get-oficina/:id", async (req, res) => {
             res.status(404).json({ error: "Oficina não encontrada" });
         }
     } catch (error) {
-        console.error("Erro ao buscar oficina");
+        console.error("Erro ao buscar oficina", error.message);
     }
 });
 
 app.post("/create-oficina", async (req, res) => {
     try {
-        await OficinaModel.create(req.body.tema, req.body.descricao, req.body.data, req.body.responsavel);
+        const result = await OficinaModel.create(req.body.tema, req.body.descricao, req.body.data, req.body.responsavel);
+        const novaOficina = result[0];
+
         res.status(200).json({
             "message": "Oficina criada com sucesso",
+            "id": novaOficina.uuid,
             "tema": req.body.tema,
             "descricao": req.body.descricao,
             "data": req.body.data,
             "responsavel": req.body.responsavel
         });
     } catch (error) {
-        console.error("Erro ao criar oficina");
+        console.error("Erro ao criar oficina ", error.message);
         res.status(500).json({ error: "Erro interno ao criar oficina" });
     }
 });

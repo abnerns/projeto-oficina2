@@ -20,7 +20,7 @@ const UserModel = {
         }
     },
 
-    async create(nome, idgoogle) {
+    async create(nome, idgoogle, cargo = 'Professor') {
         try {
             const result = await sql`INSERT INTO superusuarios (nome, cargo, idgoogle) VALUES (${nome}, ${cargo}, ${idgoogle})`;
             console.log("Novo superusuario inserido");

@@ -3,8 +3,9 @@ import { motion } from "framer-motion";
 import { Calendar, GraduationCap, Plus, Users, Activity } from "lucide-react";
 import { format, isAfter } from "date-fns";
 import { useWorkshops } from "@/context/WorkshopsContext";
+import { useTeachers } from "@/context/TeachersContext";
+import { useAuth } from "@/context/AuthContext";
 import { StatCard } from "@/components/ui-kit/StatCard";
-import { getTeachersByIds, TEACHERS } from "@/data/teachers";
 
 export const Route = createFileRoute("/_app/")({
   head: () => ({
@@ -18,6 +19,8 @@ export const Route = createFileRoute("/_app/")({
 
 function Dashboard() {
   const { workshops, loading } = useWorkshops();
+  const { teachers, loading: teachersLoading } = useTeachers();
+  const { user } = useAuth();
   const now = new Date();
   const upcoming = workshops.filter((w) => isAfter(new Date(w.date), now));
   const teacherIds = new Set(workshops.flatMap((w) => w.teacherIds));
@@ -44,9 +47,9 @@ function Dashboard() {
     <div className="space-y-8 animate-fade-in">
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-semibold tracking-tight">Bem vinda de volta, Ana</h1>
+          <h1 className="text-3xl font-semibold tracking-tight">Bem vinda de volta, {user?.name?.split(" ")[0] || "Usuário"}</h1>
           <p className="text-muted-foreground mt-1">
-            Como estão as oficinas hoje
+            Como estão as oficinas hoje?
           </p>
         </div>
         <Link
@@ -60,7 +63,7 @@ function Dashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard label="Total de Oficinas" value={loading ? "—" : workshops.length} icon={GraduationCap} trend="+12% esse mês" delay={0} />
         <StatCard label="Novas" value={loading ? "—" : upcoming.length} icon={Calendar} trend="+3 essa semana" delay={0.05} />
-        <StatCard label="Professores Ativos" value={loading ? "—" : teacherIds.size} icon={Users} trend={`${TEACHERS.length} na plataforma`} delay={0.1} />
+        <StatCard label="Professores Ativos" value={loading || teachersLoading ? "—" : teacherIds.size} icon={Users} trend={`${teachers.length} na plataforma`} delay={0.1} />
         <StatCard label="Crescimento" value="92%" icon={Activity} trend="+4.2% vs o mês anterior" delay={0.15} />
       </div>
 
@@ -105,7 +108,7 @@ function Dashboard() {
         >
           <h2 className="text-lg font-semibold mb-4">Top professores</h2>
           <ul className="space-y-3">
-            {TEACHERS.map((t) => {
+            {teachers.slice(0, 5).map((t) => {
               const count = workshops.filter((w) => w.teacherIds.includes(t.id)).length;
               const pct = workshops.length ? (count / workshops.length) * 100 : 0;
               return (
@@ -147,7 +150,7 @@ function Dashboard() {
         </div>
         <div className="divide-y divide-border">
           {recent.map((w) => {
-            const teachers = getTeachersByIds(w.teacherIds);
+            const wTeachers = teachers.filter((t) => w.teacherIds.includes(t.id));
             return (
               <Link
                 key={w.id}
@@ -160,7 +163,7 @@ function Dashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">{w.title}</p>
-                  <p className="text-xs text-muted-foreground">{format(new Date(w.date), "PP")} · {teachers.map((t) => t.name).join(", ") || "No teachers"}</p>
+                  <p className="text-xs text-muted-foreground">{format(new Date(w.date), "PP")} · {wTeachers.map((t) => t.name).join(", ") || "No teachers"}</p>
                 </div>
                 <span className="text-xs text-muted-foreground hidden sm:inline">
                   {format(new Date(w.createdAt), "MMM d")}

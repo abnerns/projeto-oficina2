@@ -14,6 +14,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { WorkshopsProvider } from "@/context/WorkshopsContext";
 import { AuthProvider } from "@/context/AuthContext";
 import { StudentsProvider } from "@/context/StudentsContext";
+import { TeachersProvider } from "@/context/TeachersContext";
 
 function NotFoundComponent() {
   return (
@@ -97,12 +98,14 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <StudentsProvider>
-            <WorkshopsProvider>
-              <Outlet />
-              <Toaster position="top-right" richColors closeButton />
-            </WorkshopsProvider>
-          </StudentsProvider>
+          <TeachersProvider>
+            <StudentsProvider>
+              <WorkshopsProvider>
+                <Outlet />
+                <Toaster position="top-right" richColors closeButton />
+              </WorkshopsProvider>
+            </StudentsProvider>
+          </TeachersProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>

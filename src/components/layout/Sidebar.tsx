@@ -33,7 +33,7 @@ export function Sidebar({ collapsed, onToggle, onNavigate }: Props) {
         </div>
         {!collapsed && (
           <div className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold text-sidebar-foreground">Nome (quando decidirmos)</span>
+            <span className="text-sm font-semibold text-sidebar-foreground">EduFlow</span>
             <span className="text-xs text-muted-foreground">Oficinas</span>
           </div>
         )}

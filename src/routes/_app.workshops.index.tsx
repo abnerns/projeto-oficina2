@@ -126,7 +126,7 @@ function WorkshopsList() {
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
-          title={query ? "Nenhum resultado encontrado" : "Sem oficinas aquit"}
+          title={query ? "Nenhum resultado encontrado" : "Sem oficinas por aqui"}
           description={query ? "Tente um termo de pesquisa ou filtro diferente." : "Crie seu primeiro workshop para começar."}
         />
       ) : (
@@ -156,11 +156,10 @@ function WorkshopsList() {
                   <button
                     key={i}
                     onClick={() => setPage(i + 1)}
-                    className={`h-9 min-w-9 px-3 rounded-lg text-sm font-medium transition-colors ${
-                      page === i + 1
-                        ? "bg-primary text-primary-foreground shadow-elegant"
-                        : "border border-input bg-card hover:bg-accent"
-                    }`}
+                    className={`h-9 min-w-9 px-3 rounded-lg text-sm font-medium transition-colors ${page === i + 1
+                      ? "bg-primary text-primary-foreground shadow-elegant"
+                      : "border border-input bg-card hover:bg-accent"
+                      }`}
                   >
                     {i + 1}
                   </button>

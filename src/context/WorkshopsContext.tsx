@@ -1,5 +1,5 @@
 import * as React from "react";
-import { SEED_WORKSHOPS } from "@/data/seed";
+import { useAuth } from "./AuthContext";
 
 export type Workshop = {
   id: string;
@@ -14,55 +14,118 @@ type Ctx = {
   workshops: Workshop[];
   loading: boolean;
   getById: (id: string) => Workshop | undefined;
-  create: (w: Omit<Workshop, "id" | "createdAt">) => Workshop;
-  update: (id: string, w: Partial<Omit<Workshop, "id" | "createdAt">>) => void;
-  remove: (id: string) => void;
+  create: (w: Omit<Workshop, "id" | "createdAt">) => Promise<Workshop>;
+  update: (id: string, w: Partial<Omit<Workshop, "id" | "createdAt">>) => Promise<void>;
+  remove: (id: string) => Promise<void>;
+  refresh: () => Promise<void>;
 };
 
 const WorkshopsContext = React.createContext<Ctx | null>(null);
-const STORAGE_KEY = "edu.workshops.v1";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
 
 export function WorkshopsProvider({ children }: { children: React.ReactNode }) {
   const [workshops, setWorkshops] = React.useState<Workshop[]>([]);
   const [loading, setLoading] = React.useState(true);
+  const { getToken } = useAuth();
 
-  React.useEffect(() => {
-    const t = setTimeout(() => {
-      try {
-        const raw = typeof window !== "undefined" ? localStorage.getItem(STORAGE_KEY) : null;
-        if (raw) setWorkshops(JSON.parse(raw));
-        else setWorkshops(SEED_WORKSHOPS);
-      } catch {
-        setWorkshops(SEED_WORKSHOPS);
-      } finally {
-        setLoading(false);
+  const fetchWorkshops = React.useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/get-oficinas`);
+      if (response.ok) {
+        const data = await response.json();
+        const mapped: Workshop[] = data.map((o: any) => ({
+          id: o.uuid,
+          title: o.tema,
+          description: o.descricao,
+          date: o.data,
+          teacherIds: [o.SUP_responsavel], // Backend returns a single responsavel
+          createdAt: o.data, // Using data as createdAt if not provided by backend
+        }));
+        setWorkshops(mapped);
       }
-    }, 450);
-    return () => clearTimeout(t);
+    } catch (error) {
+      console.error("Erro ao buscar oficinas:", error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   React.useEffect(() => {
-    if (!loading && typeof window !== "undefined") {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(workshops));
-    }
-  }, [workshops, loading]);
+    fetchWorkshops();
+  }, [fetchWorkshops]);
 
   const value: Ctx = {
     workshops,
     loading,
     getById: (id) => workshops.find((w) => w.id === id),
-    create: (w) => {
+    create: async (w) => {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/create-oficina`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          tema: w.title,
+          descricao: w.description,
+          data: w.date,
+          responsavel: w.teacherIds[0], // Sending the first teacher as responsavel
+        }),
+      });
+
+      if (!response.ok) throw new Error("Erro ao criar oficina");
+      
+      const data = await response.json();
       const newW: Workshop = {
-        ...w,
-        id: `w_${Date.now().toString(36)}`,
+        id: data.id || `w_${Date.now()}`,
+        title: w.title,
+        description: w.description,
+        date: w.date,
+        teacherIds: w.teacherIds,
         createdAt: new Date().toISOString(),
       };
+      
       setWorkshops((prev) => [newW, ...prev]);
       return newW;
     },
-    update: (id, patch) =>
-      setWorkshops((prev) => prev.map((w) => (w.id === id ? { ...w, ...patch } : w))),
-    remove: (id) => setWorkshops((prev) => prev.filter((w) => w.id !== id)),
+    update: async (id, patch) => {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/update-oficina/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          tema: patch.title,
+          descricao: patch.description,
+          data: patch.date,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Erro ao atualizar oficina");
+      
+      setWorkshops((prev) =>
+        prev.map((w) => (w.id === id ? { ...w, ...patch } : w))
+      );
+    },
+    remove: async (id) => {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/delete-oficina/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) throw new Error("Erro ao deletar oficina");
+      
+      setWorkshops((prev) => prev.filter((w) => w.id !== id));
+    },
+    refresh: fetchWorkshops,
   };
 
   return <WorkshopsContext.Provider value={value}>{children}</WorkshopsContext.Provider>;

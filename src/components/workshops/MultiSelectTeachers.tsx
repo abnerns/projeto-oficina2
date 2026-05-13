@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Check, ChevronDown, X } from "lucide-react";
-import { TEACHERS } from "@/data/teachers";
+import { Check, ChevronDown, Loader2, X } from "lucide-react";
+import { useTeachers } from "@/context/TeachersContext";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -12,6 +12,7 @@ type Props = {
 
 export function MultiSelectTeachers({ value, onChange, error }: Props) {
   const [open, setOpen] = React.useState(false);
+  const { teachers, loading } = useTeachers();
   const ref = React.useRef<HTMLDivElement>(null);
 
   React.useEffect(() => {
@@ -22,10 +23,12 @@ export function MultiSelectTeachers({ value, onChange, error }: Props) {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const selected = TEACHERS.filter((t) => value.includes(t.id));
+  const selected = teachers.filter((t) => value.includes(t.id));
 
-  const toggle = (id: string) =>
-    onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
+  const toggle = (id: string) => {
+    onChange(value.includes(id) ? [] : [id]);
+    setOpen(false);
+  };
 
   return (
     <div ref={ref} className="relative">
@@ -38,8 +41,9 @@ export function MultiSelectTeachers({ value, onChange, error }: Props) {
           open && "ring-2 ring-ring/30 border-ring"
         )}
       >
-        {selected.length === 0 && (
-          <span className="text-muted-foreground">Selecionar professores...</span>
+        {loading && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground mr-2" />}
+        {selected.length === 0 && !loading && (
+          <span className="text-muted-foreground">Selecionar professor...</span>
         )}
         {selected.map((t) => (
           <span
@@ -73,7 +77,17 @@ export function MultiSelectTeachers({ value, onChange, error }: Props) {
             className="absolute z-20 mt-2 w-full rounded-xl border border-border bg-popover shadow-elegant overflow-hidden"
           >
             <ul className="py-1 max-h-64 overflow-auto scrollbar-thin">
-              {TEACHERS.map((t) => {
+              {loading && (
+                <div className="flex items-center justify-center py-6">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              )}
+              {!loading && teachers.length === 0 && (
+                <div className="py-6 text-center text-sm text-muted-foreground">
+                  Nenhum professor encontrado.
+                </div>
+              )}
+              {teachers.map((t) => {
                 const isSel = value.includes(t.id);
                 return (
                   <li key={t.id}>
