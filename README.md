@@ -7,9 +7,9 @@
  ```git clone https://github.com/abnerns/projeto-oficina2```
 - Navegue até a pasta do projeto.
 - Execute ```npm install``` para instalar as dependências.
-- Execute ```npm run dev``` para iniciar o front-end.
-- Execute ```npm run back``` para iniciar o backend.
-- Acesse o sistema em ```localhost:8081```.
+- Execute ```npm run dev``` para iniciar o front-end (ele vai rodar na porta 8080).
+- Execute ```npm run back``` para iniciar o backend (ele vai rodar na porta 3333).
+- Acesse o sistema em ```localhost:8080```.
 
 ### Certifique-se de que:
 - O .env esteja localizado na raiz do projeto
