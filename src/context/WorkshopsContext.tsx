@@ -22,7 +22,7 @@ type Ctx = {
 
 const WorkshopsContext = React.createContext<Ctx | null>(null);
 
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
 export function WorkshopsProvider({ children }: { children: React.ReactNode }) {
   const [workshops, setWorkshops] = React.useState<Workshop[]>([]);

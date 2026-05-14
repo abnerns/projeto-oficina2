@@ -10,32 +10,42 @@ const UserModel = {
         }
     },
 
-    async findByIdGoogle(idgoogle) {
+    async findByEmail(email) {
         try {
-            const result = await sql`SELECT * FROM superusuarios WHERE idgoogle = ${idgoogle}`;
+            const result = await sql`SELECT * FROM superusuarios WHERE email = ${email}`;
             console.log("Resultado encontrado");
             return result;
         } catch (error) {
-            throw new Error("Erro ao buscar por ID Google: " + error.message);
+            throw new Error("Erro ao buscar por email: " + error.message);
         }
     },
 
-    async create(nome, idgoogle, cargo = 'Professor') {
+    async createGoogle(nome, email, idgoogle, cargo = 'Professor') {
         try {
-            const result = await sql`INSERT INTO superusuarios (nome, cargo, idgoogle) VALUES (${nome}, ${cargo}, ${idgoogle})`;
-            console.log("Novo superusuario inserido");
+            const result = await sql`INSERT INTO superusuarios (nome, cargo, email, idgoogle) VALUES (${nome}, ${cargo}, ${email}, ${idgoogle})`;
+            console.log("Novo superusuario do Google inserido");
             return result;
         } catch (error) {
-            throw new Error("Erro ao criar superusuário: " + error.message);
+            throw new Error("Erro ao criar superusuário via Google: " + error.message);
         }
     },
 
-    async update(idgoogle, nome, cargo) {
+    async createLocal(nome, email, senhaHash, cargo = 'Professor') {
+        try {
+            const result = await sql`INSERT INTO superusuarios (nome, cargo, email, senha) VALUES (${nome}, ${cargo}, ${email}, ${senhaHash})`;
+            console.log("Novo superusuario local inserido");
+            return result;
+        } catch (error) {
+            throw new Error("Erro ao criar superusuário local: " + error.message);
+        }
+    },
+
+    async update(email, nome, cargo) {
         try {
             const result = await sql`
                 UPDATE superusuarios 
                 SET nome = ${nome}, cargo = ${cargo} 
-                WHERE idgoogle = ${idgoogle}
+                WHERE email = ${email}
                 RETURNING *
             `;
             console.log("Superusuário atualizado com sucesso");
@@ -45,11 +55,11 @@ const UserModel = {
         }
     },
 
-    async delete(idgoogle) {
+    async delete(email) {
         try {
             const result = await sql`
                 DELETE FROM superusuarios 
-                WHERE idgoogle = ${idgoogle}
+                WHERE email = ${email}
                 RETURNING *
             `;
             console.log("Superusuário deletado com sucesso");
