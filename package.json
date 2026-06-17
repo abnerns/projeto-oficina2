@@ -16,7 +16,9 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "back": "node back-end/src/server.js"
+    "back": "node back-end/src/server.js",
+    "test": "node --test back-end/src/test-api.mjs",
+    "migrate": "node back-end/src/migrate.js"
   },
   "repository": {
     "type": "git",
@@ -73,6 +75,7 @@
     "input-otp": "^1.4.2",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.575.0",
+    "pdfkit": "^0.19.0",
     "postgres": "^3.4.9",
     "react": "^19.2.0",
     "react-day-picker": "^9.14.0",

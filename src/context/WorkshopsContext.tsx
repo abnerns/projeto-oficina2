@@ -5,8 +5,9 @@ export type Workshop = {
   id: string;
   title: string;
   description: string;
-  date: string; // ISO
+  date: string;
   teacherIds: string[];
+  studentCount: number;
   createdAt: string;
 };
 
@@ -14,8 +15,8 @@ type Ctx = {
   workshops: Workshop[];
   loading: boolean;
   getById: (id: string) => Workshop | undefined;
-  create: (w: Omit<Workshop, "id" | "createdAt">) => Promise<Workshop>;
-  update: (id: string, w: Partial<Omit<Workshop, "id" | "createdAt">>) => Promise<void>;
+  create: (w: Omit<Workshop, "id" | "createdAt" | "studentCount">) => Promise<Workshop>;
+  update: (id: string, w: Partial<Omit<Workshop, "id" | "createdAt" | "studentCount">>) => Promise<void>;
   remove: (id: string) => Promise<void>;
   refresh: () => Promise<void>;
 };
@@ -40,8 +41,9 @@ export function WorkshopsProvider({ children }: { children: React.ReactNode }) {
           title: o.tema,
           description: o.descricao,
           date: o.data,
-          teacherIds: [o.SUP_responsavel], // Backend returns a single responsavel
-          createdAt: o.data, // Using data as createdAt if not provided by backend
+          teacherIds: o.teacherIds || (o.SUP_responsavel ? [o.SUP_responsavel] : []),
+          studentCount: o.student_count || 0,
+          createdAt: o.created_at || o.data,
         }));
         setWorkshops(mapped);
       }
@@ -72,7 +74,8 @@ export function WorkshopsProvider({ children }: { children: React.ReactNode }) {
           tema: w.title,
           descricao: w.description,
           data: w.date,
-          responsavel: w.teacherIds[0], // Sending the first teacher as responsavel
+          responsavel: w.teacherIds[0],
+          teacherIds: w.teacherIds,
         }),
       });
 
@@ -80,11 +83,12 @@ export function WorkshopsProvider({ children }: { children: React.ReactNode }) {
       
       const data = await response.json();
       const newW: Workshop = {
-        id: data.id || `w_${Date.now()}`,
+        id: data.id,
         title: w.title,
         description: w.description,
         date: w.date,
         teacherIds: w.teacherIds,
+        studentCount: 0,
         createdAt: new Date().toISOString(),
       };
       
@@ -103,6 +107,7 @@ export function WorkshopsProvider({ children }: { children: React.ReactNode }) {
           tema: patch.title,
           descricao: patch.description,
           data: patch.date,
+          teacherIds: patch.teacherIds,
         }),
       });
 

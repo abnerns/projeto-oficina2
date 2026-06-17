@@ -1,9 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Calendar, GraduationCap, Plus, Users, Activity } from "lucide-react";
+import { Calendar, GraduationCap, Plus, Users, Activity, BookOpen } from "lucide-react";
 import { format, isAfter } from "date-fns";
 import { useWorkshops } from "@/context/WorkshopsContext";
 import { useTeachers } from "@/context/TeachersContext";
+import { useStudents } from "@/context/StudentsContext";
 import { useAuth } from "@/context/AuthContext";
 import { StatCard } from "@/components/ui-kit/StatCard";
 
@@ -20,15 +21,17 @@ export const Route = createFileRoute("/_app/")({
 function Dashboard() {
   const { workshops, loading } = useWorkshops();
   const { teachers, loading: teachersLoading } = useTeachers();
+  const { students, loading: studentsLoading } = useStudents();
   const { user } = useAuth();
   const now = new Date();
   const upcoming = workshops.filter((w) => isAfter(new Date(w.date), now));
   const teacherIds = new Set(workshops.flatMap((w) => w.teacherIds));
+  const totalStudents = students.length;
+  const totalEnrollments = workshops.reduce((sum, w) => sum + (w.studentCount || 0), 0);
   const recent = [...workshops]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 4);
 
-  // Mock chart: workshops per month (last 6 months)
   const months = Array.from({ length: 6 }).map((_, i) => {
     const d = new Date();
     d.setMonth(d.getMonth() - (5 - i));
@@ -61,10 +64,10 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Total de Oficinas" value={loading ? "—" : workshops.length} icon={GraduationCap} trend="+12% esse mês" delay={0} />
-        <StatCard label="Novas" value={loading ? "—" : upcoming.length} icon={Calendar} trend="+3 essa semana" delay={0.05} />
+        <StatCard label="Total de Oficinas" value={loading ? "—" : workshops.length} icon={GraduationCap} trend={`${upcoming.length} novas`} delay={0} />
+        <StatCard label="Total de Alunos" value={loading || studentsLoading ? "—" : totalStudents} icon={BookOpen} trend={`${totalEnrollments} vínculos`} delay={0.05} />
         <StatCard label="Professores Ativos" value={loading || teachersLoading ? "—" : teacherIds.size} icon={Users} trend={`${teachers.length} na plataforma`} delay={0.1} />
-        <StatCard label="Crescimento" value="92%" icon={Activity} trend="+4.2% vs o mês anterior" delay={0.15} />
+        <StatCard label="Alunos por Oficina" value={loading || studentsLoading ? "—" : workshops.length > 0 ? Math.round(totalEnrollments / workshops.length) : 0} icon={Activity} trend="média geral" delay={0.15} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -163,7 +166,10 @@ function Dashboard() {
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="font-medium truncate">{w.title}</p>
-                  <p className="text-xs text-muted-foreground">{format(new Date(w.date), "PP")} · {wTeachers.map((t) => t.name).join(", ") || "No teachers"}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {format(new Date(w.date), "PP")} · {wTeachers.map((t) => t.name).join(", ") || "Sem professores"}
+                    {w.studentCount > 0 && ` · ${w.studentCount} aluno${w.studentCount !== 1 ? "s" : ""}`}
+                  </p>
                 </div>
                 <span className="text-xs text-muted-foreground hidden sm:inline">
                   {format(new Date(w.createdAt), "MMM d")}
@@ -172,7 +178,7 @@ function Dashboard() {
             );
           })}
           {!loading && recent.length === 0 && (
-            <p className="text-sm text-muted-foreground py-6 text-center">No workshops yet.</p>
+            <p className="text-sm text-muted-foreground py-6 text-center">Nenhuma oficina ainda.</p>
           )}
         </div>
       </motion.div>

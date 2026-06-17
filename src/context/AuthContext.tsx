@@ -3,8 +3,9 @@ import {
   onAuthStateChanged, 
   signInWithPopup, 
   signOut, 
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
   User as FirebaseUser,
-  getIdToken
 } from "firebase/auth";
 import { auth, googleProvider } from "@/lib/firebase";
 
@@ -23,7 +24,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   login: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
-  register: (data: any) => Promise<void>;
+  register: (data: { nome: string; email: string; senha: string; cargo?: string }) => Promise<void>;
   logout: () => void;
   isLoading: boolean;
   getToken: () => Promise<string | null>;
@@ -49,7 +50,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (response.ok) {
         const data = await response.json();
         const userData: User = {
-          id: data.idgoogle || firebaseUser.uid,
+          id: data.uuid || firebaseUser.uid,
           name: data.nome || firebaseUser.displayName || "Usuário",
           email: firebaseUser.email || "",
           role: data.profissao === "Admin" ? "admin" : "teacher",
@@ -79,8 +80,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } else {
         const savedUser = localStorage.getItem("ellp.user");
         if (savedUser) {
-          setUser(null);
-          localStorage.removeItem("ellp.user");
+          const parsed = JSON.parse(savedUser);
+          if (parsed.localAuth) {
+            setUser(parsed);
+          } else {
+            setUser(null);
+            localStorage.removeItem("ellp.user");
+          }
         }
       }
       setIsLoading(false);
@@ -89,9 +95,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const login = async (email: string, _password: string) => {
-    // This could be implemented with signInWithEmailAndPassword if needed
-    console.log("Email login not fully implemented with Firebase yet", email);
+  const login = async (email: string, password: string) => {
+    const localRes = await fetch(`${API_URL}/login/local`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, senha: password }),
+    });
+    if (localRes.ok) {
+      const data = await localRes.json();
+      const userData: Record<string, any> = {
+        id: data.usuario.uuid,
+        name: data.usuario.nome,
+        email: data.usuario.email,
+        role: data.usuario.cargo === "Admin" ? "admin" : "teacher",
+        token: data.token,
+        localAuth: true,
+      };
+      setUser(userData as any);
+      localStorage.setItem("ellp.user", JSON.stringify(userData));
+      return;
+    }
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      await syncWithBackend(userCredential.user);
+    } catch {
+      throw new Error("E-mail ou senha incorretos");
+    }
   };
 
   const loginWithGoogle = async () => {
@@ -106,20 +135,37 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const register = async (data: any) => {
-    // Similar to login
-    console.log("Register not implemented with Firebase yet", data);
+  const register = async (data: { nome: string; email: string; senha: string; cargo?: string }) => {
+    const response = await fetch(`${API_URL}/registrar`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nome: data.nome,
+        email: data.email,
+        senha: data.senha,
+        cargo: data.cargo || "Professor",
+      }),
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ error: "Erro ao registrar" }));
+      throw new Error(err.error || "Erro ao registrar");
+    }
   };
 
   const logout = async () => {
-    await signOut(auth);
-    setUser(null);
     localStorage.removeItem("ellp.user");
+    setUser(null);
+    await signOut(auth);
   };
 
   const getToken = async () => {
     if (auth.currentUser) {
       return await auth.currentUser.getIdToken(true);
+    }
+    const saved = localStorage.getItem("ellp.user");
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      return parsed.token || null;
     }
     return null;
   };
