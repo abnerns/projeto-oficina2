@@ -4,7 +4,7 @@ import { Inbox, Plus } from "lucide-react";
 export function EmptyState({
   title = "No workshops found",
   description = "Get started by creating your first workshop.",
-  actionLabel = "New workshop",
+  actionLabel = "Nova Oficina",
   actionTo = "/workshops/new",
 }: {
   title?: string;

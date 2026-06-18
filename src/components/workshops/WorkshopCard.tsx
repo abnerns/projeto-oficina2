@@ -1,9 +1,9 @@
 import { Link } from "@tanstack/react-router";
-import { Calendar, Eye, Pencil, Trash2, Users } from "lucide-react";
+import { Calendar, Eye, Pencil, Trash2, Users, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import type { Workshop } from "@/context/WorkshopsContext";
-import { getTeachersByIds } from "@/data/teachers";
+import { useTeachers } from "@/context/TeachersContext";
 
 type Props = {
   workshop: Workshop;
@@ -11,7 +11,8 @@ type Props = {
 };
 
 export function WorkshopCard({ workshop, onDelete }: Props) {
-  const teachers = getTeachersByIds(workshop.teacherIds);
+  const { teachers } = useTeachers();
+  const wTeachers = teachers.filter((t) => workshop.teacherIds.includes(t.id));
   const isPast = new Date(workshop.date) < new Date();
 
   return (
@@ -82,12 +83,16 @@ export function WorkshopCard({ workshop, onDelete }: Props) {
         </span>
         <span className="inline-flex items-center gap-1.5">
           <Users className="h-3.5 w-3.5" />
-          {teachers.length} teacher{teachers.length === 1 ? "" : "s"}
+          {wTeachers.length} professor{wTeachers.length === 1 ? "" : "es"}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <BookOpen className="h-3.5 w-3.5" />
+          {workshop.studentCount} aluno{workshop.studentCount === 1 ? "" : "s"}
         </span>
       </div>
 
       <div className="flex items-center -space-x-2">
-        {teachers.slice(0, 4).map((t) => (
+        {wTeachers.slice(0, 4).map((t) => (
           <div
             key={t.id}
             title={t.name}
@@ -97,12 +102,12 @@ export function WorkshopCard({ workshop, onDelete }: Props) {
             {t.name.split(" ").map((n) => n[0]).join("").slice(0, 2)}
           </div>
         ))}
-        {teachers.length > 4 && (
+        {wTeachers.length > 4 && (
           <div className="h-7 w-7 rounded-full ring-2 ring-card bg-muted text-[10px] font-semibold flex items-center justify-center">
-            +{teachers.length - 4}
+            +{wTeachers.length - 4}
           </div>
         )}
-        {teachers.length === 0 && (
+        {wTeachers.length === 0 && (
           <span className="text-xs text-muted-foreground">Sem professores</span>
         )}
       </div>

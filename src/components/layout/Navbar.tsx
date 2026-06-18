@@ -1,9 +1,19 @@
-import { Bell, Menu, Moon, Search, Sun } from "lucide-react";
+import { Bell, Menu, Moon, Search, Sun, LogOut } from "lucide-react";
 import { useTheme } from "@/context/ThemeContext";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 import { Breadcrumbs } from "./Breadcrumbs";
 
 export function Navbar({ onMenu }: { onMenu: () => void }) {
   const { theme, toggle } = useTheme();
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate({ to: "/login" });
+  };
   return (
     <header className="sticky top-0 z-30 h-16 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="h-full px-4 md:px-6 flex items-center gap-3">
@@ -38,9 +48,24 @@ export function Navbar({ onMenu }: { onMenu: () => void }) {
             <Bell className="h-4 w-4" />
             <span className="absolute top-2 right-2 h-2 w-2 rounded-full bg-primary" />
           </button>
-          <div className="ml-1 h-9 w-9 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-sm font-semibold shadow-elegant">
-            AS
+          <div className="hidden sm:flex flex-col items-end mr-1">
+            <span className="text-sm font-medium leading-none">{user?.name || "Usuário"}</span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider mt-1">
+              {user?.role === "admin" ? "Administrador" : "Professor"}
+            </span>
           </div>
+          <div className="ml-1 h-9 w-9 rounded-full gradient-primary flex items-center justify-center text-primary-foreground text-sm font-semibold shadow-elegant">
+            {user?.name?.substring(0, 2).toUpperCase() || "US"}
+          </div>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={handleLogout}
+            className="text-muted-foreground hover:text-destructive h-9 w-9"
+            title="Sair"
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </div>
     </header>

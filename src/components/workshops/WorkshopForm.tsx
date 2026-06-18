@@ -53,13 +53,22 @@ export function WorkshopForm({ mode, id }: Props) {
     await new Promise((r) => setTimeout(r, 400));
     const payload = { title: title.trim(), description: description.trim(), date: new Date(date).toISOString(), teacherIds };
     if (mode === "create") {
-      const w = create(payload);
-      toast.success("Oficina criada", { description: w.title });
-      navigate({ to: "/workshops/$id", params: { id: w.id } });
+      try {
+        const w = await create(payload);
+        toast.success("Oficina criada", { description: w.title });
+        // The id will be w_ timestamp if backend doesn't return id, but at least w is resolved.
+        navigate({ to: "/workshops/$id", params: { id: w.id } });
+      } catch (err) {
+        toast.error("Erro ao criar oficina");
+      }
     } else if (id) {
-      update(id, payload);
-      toast.success("Oficina atualizada");
-      navigate({ to: "/workshops/$id", params: { id } });
+      try {
+        await update(id, payload);
+        toast.success("Oficina atualizada");
+        navigate({ to: "/workshops/$id", params: { id } });
+      } catch (err) {
+        toast.error("Erro ao atualizar oficina");
+      }
     }
     setSubmitting(false);
   };

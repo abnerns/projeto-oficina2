@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { LayoutDashboard, GraduationCap, Plus, Users, Sparkles, ChevronLeft } from "lucide-react";
+import { LayoutDashboard, GraduationCap, Plus, Users, Sparkles, ChevronLeft, FileText } from "lucide-react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -14,6 +14,8 @@ const items = [
   { to: "/workshops", label: "Oficinas", icon: GraduationCap },
   { to: "/workshops/new", label: "Nova Oficina", icon: Plus },
   { to: "/teachers", label: "Professores", icon: Users },
+  { to: "/students", label: "Alunos", icon: Users },
+  { to: "/certificates", label: "Certificados", icon: FileText },
 ];
 
 export function Sidebar({ collapsed, onToggle, onNavigate }: Props) {
@@ -32,7 +34,7 @@ export function Sidebar({ collapsed, onToggle, onNavigate }: Props) {
         </div>
         {!collapsed && (
           <div className="flex flex-col leading-tight">
-            <span className="text-sm font-semibold text-sidebar-foreground">Nome (quando decidirmos)</span>
+            <span className="text-sm font-semibold text-sidebar-foreground">EduFlow</span>
             <span className="text-xs text-muted-foreground">Oficinas</span>
           </div>
         )}
