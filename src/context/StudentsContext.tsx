@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { useAuth } from "./AuthContext";
 
 export interface Student {
   id: string;
@@ -10,77 +11,137 @@ export interface Student {
 
 interface StudentsContextType {
   students: Student[];
-  addStudent: (student: Omit<Student, "id" | "workshopIds">) => void;
-  updateStudent: (id: string, student: Partial<Student>) => void;
-  deleteStudent: (id: string) => void;
-  linkStudentToWorkshop: (studentId: string, workshopId: string) => void;
-  unlinkStudentFromWorkshop: (studentId: string, workshopId: string) => void;
+  loading: boolean;
+  addStudent: (data: Omit<Student, "id" | "workshopIds">) => Promise<void>;
+  addStudentsBySchool: (data: { escola: string; nomes: string[]; idade?: number }) => Promise<void>;
+  updateStudent: (id: string, data: Partial<Student>) => Promise<void>;
+  deleteStudent: (id: string) => Promise<void>;
+  linkStudentToWorkshop: (studentId: string, workshopId: string) => Promise<void>;
+  linkStudentsToWorkshop: (studentIds: string[], workshopId: string) => Promise<void>;
+  unlinkStudentFromWorkshop: (studentId: string, workshopId: string) => Promise<void>;
   getStudentsByWorkshop: (workshopId: string) => Student[];
+  refresh: () => Promise<void>;
 }
 
 const StudentsContext = createContext<StudentsContextType | undefined>(undefined);
 
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
+
 export function StudentsProvider({ children }: { children: React.ReactNode }) {
   const [students, setStudents] = useState<Student[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { getToken, isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const savedStudents = localStorage.getItem("ellp.students");
-    if (savedStudents) {
-      setStudents(JSON.parse(savedStudents));
-    } else {
-      // Dados iniciais para demonstração
-      const initialStudents: Student[] = [
-        { id: "1", name: "João Silva", age: 12, school: "Escola Municipal A", workshopIds: ["1"] },
-        { id: "2", name: "Maria Oliveira", age: 14, school: "Escola Estadual B", workshopIds: ["1", "2"] },
-      ];
-      setStudents(initialStudents);
-      localStorage.setItem("ellp.students", JSON.stringify(initialStudents));
+  const fetchStudents = useCallback(async () => {
+    if (!isAuthenticated) {
+      setLoading(false);
+      return;
     }
-  }, []);
+    setLoading(true);
+    try {
+      const token = await getToken();
+      const response = await fetch(`${API_URL}/get-alunos`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const mapped: Student[] = data.map((a: any) => ({
+          id: a.uuid,
+          name: a.nome,
+          age: a.idade,
+          school: a.escola,
+          workshopIds: a.workshopIds || [],
+        }));
+        setStudents(mapped);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar alunos:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [getToken, isAuthenticated]);
 
   useEffect(() => {
-    localStorage.setItem("ellp.students", JSON.stringify(students));
-  }, [students]);
+    fetchStudents();
+  }, [fetchStudents]);
 
-  const addStudent = (data: Omit<Student, "id" | "workshopIds">) => {
-    const newStudent: Student = {
-      ...data,
-      id: Math.random().toString(36).substr(2, 9),
-      workshopIds: [],
-    };
-    setStudents((prev) => [...prev, newStudent]);
+  const addStudent = async (data: Omit<Student, "id" | "workshopIds">) => {
+    const token = await getToken();
+    const response = await fetch(`${API_URL}/create-aluno`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ nome: data.name, idade: data.age, escola: data.school }),
+    });
+    if (!response.ok) throw new Error("Erro ao criar aluno");
+    await fetchStudents();
   };
 
-  const updateStudent = (id: string, data: Partial<Student>) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, ...data } : s))
-    );
+  const addStudentsBySchool = async (data: { escola: string; nomes: string[]; idade?: number }) => {
+    const token = await getToken();
+    const response = await fetch(`${API_URL}/create-alunos-batch`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ escola: data.escola, nomes: data.nomes, idade: data.idade }),
+    });
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({ error: "Erro ao criar alunos" }));
+      throw new Error(err.error || "Erro ao criar alunos");
+    }
+    await fetchStudents();
   };
 
-  const deleteStudent = (id: string) => {
-    setStudents((prev) => prev.filter((s) => s.id !== id));
+  const updateStudent = async (id: string, data: Partial<Student>) => {
+    const token = await getToken();
+    const response = await fetch(`${API_URL}/update-aluno/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ nome: data.name, idade: data.age, escola: data.school }),
+    });
+    if (!response.ok) throw new Error("Erro ao atualizar aluno");
+    await fetchStudents();
   };
 
-  const linkStudentToWorkshop = (studentId: string, workshopId: string) => {
-    setStudents((prev) =>
-      prev.map((s) => {
-        if (s.id === studentId && !s.workshopIds.includes(workshopId)) {
-          return { ...s, workshopIds: [...s.workshopIds, workshopId] };
-        }
-        return s;
-      })
-    );
+  const deleteStudent = async (id: string) => {
+    const token = await getToken();
+    const response = await fetch(`${API_URL}/delete-aluno/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!response.ok) throw new Error("Erro ao deletar aluno");
+    await fetchStudents();
   };
 
-  const unlinkStudentFromWorkshop = (studentId: string, workshopId: string) => {
-    setStudents((prev) =>
-      prev.map((s) => {
-        if (s.id === studentId) {
-          return { ...s, workshopIds: s.workshopIds.filter((id) => id !== workshopId) };
-        }
-        return s;
-      })
-    );
+  const linkStudentToWorkshop = async (studentId: string, workshopId: string) => {
+    const token = await getToken();
+    const response = await fetch(`${API_URL}/enroll-aluno`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ alunoId: studentId, oficinaId: workshopId }),
+    });
+    if (!response.ok) throw new Error("Erro ao vincular aluno");
+    await fetchStudents();
+  };
+
+  const linkStudentsToWorkshop = async (studentIds: string[], workshopId: string) => {
+    const token = await getToken();
+    const response = await fetch(`${API_URL}/enroll-alunos-batch`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ alunoIds: studentIds, oficinaId: workshopId }),
+    });
+    if (!response.ok) throw new Error("Erro ao vincular alunos");
+    await fetchStudents();
+  };
+
+  const unlinkStudentFromWorkshop = async (studentId: string, workshopId: string) => {
+    const token = await getToken();
+    const response = await fetch(`${API_URL}/unenroll-aluno`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ alunoId: studentId, oficinaId: workshopId }),
+    });
+    if (!response.ok) throw new Error("Erro ao remover vínculo");
+    await fetchStudents();
   };
 
   const getStudentsByWorkshop = (workshopId: string) => {
@@ -88,15 +149,19 @@ export function StudentsProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <StudentsContext.Provider
+      <StudentsContext.Provider
       value={{
         students,
+        loading,
         addStudent,
+        addStudentsBySchool,
         updateStudent,
         deleteStudent,
         linkStudentToWorkshop,
+        linkStudentsToWorkshop,
         unlinkStudentFromWorkshop,
         getStudentsByWorkshop,
+        refresh: fetchStudents,
       }}
     >
       {children}

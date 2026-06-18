@@ -37,3 +37,8 @@ package-lock.json
 teste.html
 .env
 back-end/src/common/admin/serviceAccount.json
+
+RELATORIO.md
+RELATORIO TESTES.md
+OficinaIntegração2.rar
+.gitignore

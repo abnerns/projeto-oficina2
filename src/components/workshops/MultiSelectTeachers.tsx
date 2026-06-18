@@ -26,8 +26,7 @@ export function MultiSelectTeachers({ value, onChange, error }: Props) {
   const selected = teachers.filter((t) => value.includes(t.id));
 
   const toggle = (id: string) => {
-    onChange(value.includes(id) ? [] : [id]);
-    setOpen(false);
+    onChange(value.includes(id) ? value.filter((v) => v !== id) : [...value, id]);
   };
 
   return (

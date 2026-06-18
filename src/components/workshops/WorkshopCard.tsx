@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Calendar, Eye, Pencil, Trash2, Users } from "lucide-react";
+import { Calendar, Eye, Pencil, Trash2, Users, BookOpen } from "lucide-react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
 import type { Workshop } from "@/context/WorkshopsContext";
@@ -84,6 +84,10 @@ export function WorkshopCard({ workshop, onDelete }: Props) {
         <span className="inline-flex items-center gap-1.5">
           <Users className="h-3.5 w-3.5" />
           {wTeachers.length} professor{wTeachers.length === 1 ? "" : "es"}
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <BookOpen className="h-3.5 w-3.5" />
+          {workshop.studentCount} aluno{workshop.studentCount === 1 ? "" : "s"}
         </span>
       </div>
 
