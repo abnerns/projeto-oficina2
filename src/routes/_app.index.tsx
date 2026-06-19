@@ -18,7 +18,7 @@ export const Route = createFileRoute("/_app/")({
   component: Dashboard,
 });
 
-function Dashboard() {
+export function Dashboard() {
   const { workshops, loading } = useWorkshops();
   const { teachers, loading: teachersLoading } = useTeachers();
   const { students, loading: studentsLoading } = useStudents();

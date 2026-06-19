@@ -13,7 +13,7 @@ export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-function LoginPage() {
+export function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);

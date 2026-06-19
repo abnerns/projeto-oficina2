@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_app/students")({
   component: StudentsPage,
 });
 
-function StudentsPage() {
+export function StudentsPage() {
   const { students, loading, addStudent, addStudentsBySchool, deleteStudent } = useStudents();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [name, setName] = useState("");

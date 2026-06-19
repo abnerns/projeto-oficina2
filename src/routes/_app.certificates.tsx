@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_app/certificates")({
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
-function CertificatesPage() {
+export function CertificatesPage() {
   const { workshops, loading: wsLoading } = useWorkshops();
   const { students, loading: stdLoading, getStudentsByWorkshop } = useStudents();
   const { getToken } = useAuth();
