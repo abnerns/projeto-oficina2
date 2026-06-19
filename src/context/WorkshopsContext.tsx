@@ -21,7 +21,7 @@ type Ctx = {
   refresh: () => Promise<void>;
 };
 
-const WorkshopsContext = React.createContext<Ctx | null>(null);
+export const WorkshopsContext = React.createContext<Ctx | null>(null);
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 

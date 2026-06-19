@@ -15,7 +15,7 @@ type Ctx = {
   getById: (id: string) => Teacher | undefined;
 };
 
-const TeachersContext = React.createContext<Ctx | null>(null);
+export const TeachersContext = React.createContext<Ctx | null>(null);
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 

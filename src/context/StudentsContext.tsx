@@ -23,7 +23,7 @@ interface StudentsContextType {
   refresh: () => Promise<void>;
 }
 
-const StudentsContext = createContext<StudentsContextType | undefined>(undefined);
+export const StudentsContext = createContext<StudentsContextType | undefined>(undefined);
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3333";
 
